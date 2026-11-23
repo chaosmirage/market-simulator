@@ -1,9 +1,9 @@
 // @vitest-environment node
 // Node environment on purpose: the loader's contract is exercised against
 // synthetic module instances -- no DOM and no compiled artifact involved.
-// The artifact-level round trip lives in wasm-stub.artifact.spec.ts.
+// The artifact-level round trip lives in market-generator.artifact.spec.ts.
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { instantiateWasmStub } from './wasm-loader';
+import { instantiateMarketGenerator } from './wasm-loader';
 
 /**
  * A synthetic export set shaped like the compiled market-data module: the
@@ -28,12 +28,12 @@ function instantiateWith(exports: Record<string, unknown>): Promise<unknown> {
       .fn()
       .mockResolvedValue({ instance: { exports } }),
   });
-  return instantiateWasmStub(new Uint8Array()).finally(() =>
+  return instantiateMarketGenerator(new Uint8Array()).finally(() =>
     vi.unstubAllGlobals()
   );
 }
 
-describe('wasm-stub loader export mirror', () => {
+describe('market-generator loader export mirror', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
   });

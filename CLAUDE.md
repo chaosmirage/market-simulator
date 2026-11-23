@@ -10,23 +10,23 @@ generated locally by a project-owned WebAssembly library running inside a
 Web Worker, so data generation never competes with the UI thread. The
 repository is an Nx workspace on pnpm holding one Angular application
 (`apps/market-simulator`) and one AssemblyScript library compiled to Wasm
-(`libs/wasm-stub`), plus an automatic GitHub Pages delivery pipeline.
+(`libs/market-generator`), plus an automatic GitHub Pages delivery pipeline.
 
 ## Key pieces
 
 - Workspace substrate at the root: `package.json` (pnpm `packageManager`
   pin), `pnpm-workspace.yaml` (packages under `apps/*` and `libs/*`),
   `nx.json` (build and test targets run after the projects they depend on),
-  `tsconfig.base.json` (strict; excludes `libs/wasm-stub`, which is
+  `tsconfig.base.json` (strict; excludes `libs/market-generator`, which is
   AssemblyScript rather than application TypeScript), `vitest.workspace.ts`,
   and `eslint.config.mjs` (Nx module boundaries).
 - Toolchain pins are single-sourced: the Node major lives in `.nvmrc` and
   the exact pnpm version plus integrity hash in the `packageManager` field;
   CI reads both files instead of duplicating literals.
-- Wasm artifact flow spanning both projects: `libs/wasm-stub` compiles
-  first into `dist/libs/wasm-stub/wasm-stub.wasm`; the application build
+- Wasm artifact flow spanning both projects: `libs/market-generator` compiles
+  first into `dist/libs/market-generator/market-generator.wasm`; the application build
   copies it into `dist/apps/market-simulator/browser/wasm/`; the worker
-  fetches it same-origin at `wasm/wasm-stub.wasm`. Treat the library output
+  fetches it same-origin at `wasm/market-generator.wasm`. Treat the library output
   path, the app assets entry, and the loader URL as one contract.
 - Application surface spanning both projects: the worker owns the
   authoritative run state (settings, analytics, monotonic runId) and pushes
@@ -46,7 +46,7 @@ pnpm exec nx run-many -t build,lint,test
 ```
 
 - Nested guides: `apps/market-simulator/CLAUDE.md` (application unit) and
-  `libs/wasm-stub/CLAUDE.md` (Wasm library).
+  `libs/market-generator/CLAUDE.md` (Wasm library).
 
 ## How to extend safely
 

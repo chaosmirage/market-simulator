@@ -24,7 +24,7 @@ type GenerationModule = Awaited<ReturnType<typeof loadGenerationModule>>;
  */
 function loadGenerationModule() {
   return import('../wasm/wasm-loader').then((loader) =>
-    loader.loadWasmStub()
+    loader.loadMarketGenerator()
   );
 }
 

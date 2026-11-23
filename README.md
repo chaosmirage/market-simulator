@@ -123,7 +123,8 @@ be started manually from the Actions tab.
 
 Data flows through three tiers in one direction:
 
-1. `libs/wasm-stub` (AssemblyScript) compiles to `wasm-stub.wasm`. The
+1. `libs/market-generator` (AssemblyScript) compiles to
+   `market-generator.wasm`. The
    module keeps per-instrument state between calls and generates batches of
    market updates: one simulated trade plus a bid/ask snapshot per update.
    Randomness and price evolution run inside the Wasm module, seeded from an
@@ -166,7 +167,7 @@ Projects follow the Nx workspace convention and live under `apps/` and
 
 - `apps/market-simulator` - the Angular application (shell, routes, pages,
   worker client, run-state store)
-- `libs/wasm-stub` - the AssemblyScript market-update generator compiled to
+- `libs/market-generator` - the AssemblyScript market-update generator compiled to
   Wasm
 
 Toolchain configuration stays at the workspace root: `package.json`,

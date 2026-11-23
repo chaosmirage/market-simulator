@@ -10,29 +10,29 @@ path.
 
 ## Key pieces
 
-- `wasm-loader.ts` - `WasmStubExports` is the typed surface the module
+- `wasm-loader.ts` - `MarketGeneratorExports` is the typed surface the module
   must expose: `memory`, `init`, `generateBatch`, and `recordCount`, each
-  fail-fast-checked in `instantiateWasmStub(bytes)` when missing.
-  `loadWasmStub()` fetches the deployed artifact same-origin at
-  `wasm/wasm-stub.wasm` and instantiates it. The worker calls
+  fail-fast-checked in `instantiateMarketGenerator(bytes)` when missing.
+  `loadMarketGenerator()` fetches the deployed artifact same-origin at
+  `wasm/market-generator.wasm` and instantiates it. The worker calls
   `init(instrumentCount, seed)` once per run, then per acquisition calls
   `generateBatch(updatesPerBatch)` — whose return value is the byte offset
   of the first record, with a negative sentinel marking an invalid request
   — reads the record count, and decodes the batch through a fresh
   `Uint32Array` view over the module's memory (seven u32 fields per
   record), completing the read before the next call reuses the buffer.
-- `wasm-stub.artifact.spec.ts` - proves the built artifact exists in
-  `dist/libs/wasm-stub`, instantiates through the loader, and checks the
+- `market-generator.artifact.spec.ts` - proves the built artifact exists in
+  `dist/libs/market-generator`, instantiates through the loader, and checks the
   generator contract with fixed seeds: requested batch sizes, record value
   invariants, reproducibility, and state that evolves across batches
   (node environment, no DOM).
 
 ## How to extend safely
 
-- Widen the module surface in `libs/wasm-stub` first, then mirror every
-  new export in `WasmStubExports` and the fail-fast checks here.
+- Widen the module surface in `libs/market-generator` first, then mirror every
+  new export in `MarketGeneratorExports` and the fail-fast checks here.
 - Keep one instantiate path: feed new byte sources to
-  `instantiateWasmStub` rather than calling `WebAssembly.instantiate`
+  `instantiateMarketGenerator` rather than calling `WebAssembly.instantiate`
   directly.
 - The default URL matches the app assets entry that copies the artifact
   into `wasm/`; change both together.

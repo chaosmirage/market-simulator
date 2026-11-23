@@ -1,4 +1,4 @@
-# wasm-stub
+# market-generator
 
 ## Purpose
 
@@ -30,13 +30,13 @@ contract the worker reads directly from linear memory.
   directory:
 
 ```sh
-pnpm exec asc src/index.ts --outFile ../../dist/libs/wasm-stub/wasm-stub.wasm --runtime stub
+pnpm exec asc src/index.ts --outFile ../../dist/libs/market-generator/market-generator.wasm --runtime stub
 ```
 
 - `package.json` pins `assemblyscript`; `tsconfig.json` extends
   `assemblyscript/std/assembly.json`.
 - Consumption is artifact-only: the application build copies
-  `dist/libs/wasm-stub/*.wasm` into its browser output, and nothing
+  `dist/libs/market-generator/*.wasm` into its browser output, and nothing
   imports this library as TypeScript. The root `tsconfig.base.json`
   excludes it from the application program, and lint parses it without
   type-aware rules.
@@ -45,7 +45,7 @@ pnpm exec asc src/index.ts --outFile ../../dist/libs/wasm-stub/wasm-stub.wasm --
 
 - Grow generator behavior here; keep the export surface small and typed,
   because every export is a commitment the application's
-  `WasmStubExports` must mirror, and the record layout is a contract the
+  `MarketGeneratorExports` must mirror, and the record layout is a contract the
   worker's decoder follows field for field.
 - Keep the output path aligned with the application assets entry that
   copies the artifact; the workspace runs this build before the

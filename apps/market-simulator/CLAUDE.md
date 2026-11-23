@@ -11,7 +11,7 @@ wiring; behavior inside `src/app` is documented by nested guides.
 
 - `project.json` - the unit's targets. The build uses the Angular
   application builder with `src/main.ts` as the browser entry, copies
-  `public/` verbatim, and copies `dist/libs/wasm-stub/*.wasm` into the
+  `public/` verbatim, and copies `dist/libs/market-generator/*.wasm` into the
   `wasm/` output directory (the artifact the worker fetches). Both build
   and serve build project dependencies first, so the worker never starts
   against a stale or missing Wasm artifact. Lint, test, and a static file

@@ -9,7 +9,7 @@ export default [
     // misreads u64 integer literals (they exceed Number.MAX_SAFE_INTEGER by
     // design) as precision-loss, and no other TS rule carries meaning for a
     // module compiled by asc to a wasm artifact.
-    files: ['libs/wasm-stub/src/**/*.ts'],
+    files: ['libs/market-generator/src/**/*.ts'],
     rules: {
       'no-loss-of-precision': 'off',
     },

@@ -43,13 +43,13 @@ const loaderState = vi.hoisted(() => ({
 }));
 
 vi.mock('../wasm/wasm-loader', () => ({
-  loadWasmStub: (() => {
+  loadMarketGenerator: (() => {
     loaderState.runs += 1;
     if (loaderState.failure !== null) {
       return Promise.reject(loaderState.failure);
     }
     return Promise.resolve(loaderState.wasm);
-  }) as unknown as typeof import('../wasm/wasm-loader')['loadWasmStub'],
+  }) as unknown as typeof import('../wasm/wasm-loader')['loadMarketGenerator'],
 }));
 
 const RECORD_FIELDS = 7;

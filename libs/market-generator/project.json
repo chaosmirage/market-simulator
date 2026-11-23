@@ -1,0 +1,21 @@
+{
+  "name": "market-generator",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/market-generator/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "options": {
+        "cwd": "libs/market-generator",
+        "command": "pnpm exec asc src/index.ts --outFile ../../dist/libs/market-generator/market-generator.wasm --runtime stub"
+      },
+      "outputs": ["{workspaceRoot}/dist/libs/market-generator"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

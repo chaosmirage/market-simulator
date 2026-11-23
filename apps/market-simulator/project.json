@@ -6,7 +6,7 @@
   "sourceRoot": "apps/market-simulator/src",
   "tags": [],
   "implicitDependencies": [
-    "wasm-stub"
+    "market-generator"
   ],
   "targets": {
     "build": {
@@ -29,7 +29,7 @@
           },
           {
             "glob": "**/*.wasm",
-            "input": "dist/libs/wasm-stub",
+            "input": "dist/libs/market-generator",
             "output": "wasm"
           }
         ],

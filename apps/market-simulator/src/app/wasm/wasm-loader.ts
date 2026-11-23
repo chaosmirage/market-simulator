@@ -1,11 +1,11 @@
-// Loads the compiled wasm-stub module: a same-origin fetch of the deployed
+// Loads the compiled market-generator module: a same-origin fetch of the deployed
 // artifact, WebAssembly.instantiate of the bytes, and a typed view of the
 // module's market-data exports. The instantiate core is split out so the
 // worker seam (browser fetch) and the artifact spec (bytes read from the
 // build output) share one code path.
 
-/** The typed surface of the wasm-stub module's WebAssembly exports. */
-export interface WasmStubExports {
+/** The typed surface of the market-generator module's WebAssembly exports. */
+export interface MarketGeneratorExports {
   /** The linear memory the generated record buffer lives in. */
   memory: WebAssembly.Memory;
   /** Establishes a fresh, seeded generation state for the instruments. */
@@ -21,13 +21,13 @@ export interface WasmStubExports {
 }
 
 /**
- * Instantiates wasm-stub bytes and returns the typed exports view.
+ * Instantiates market-generator bytes and returns the typed exports view.
  * Fails fast, naming the export, when the module does not expose the
  * expected market-data contract.
  */
-export async function instantiateWasmStub(
+export async function instantiateMarketGenerator(
   bytes: ArrayBuffer | Uint8Array
-): Promise<WasmStubExports> {
+): Promise<MarketGeneratorExports> {
   // The AssemblyScript toolchain links an env abort import into every module
   // it emits; provide it so instantiation succeeds and trap-like aborts
   // surface as thrown errors instead of missing-import failures.
@@ -40,7 +40,7 @@ export async function instantiateWasmStub(
         column: number
       ): never {
         throw new Error(
-          `wasm-stub module aborted at ${fileName}:${line}:${column} (${message})`
+          `market-generator module aborted at ${fileName}:${line}:${column} (${message})`
         );
       },
     },
@@ -55,31 +55,35 @@ export async function instantiateWasmStub(
   const linearMemoryBuffer = (memory as { buffer?: unknown } | undefined)
     ?.buffer;
   if (!(linearMemoryBuffer instanceof ArrayBuffer)) {
-    throw new Error('wasm-stub module is missing its memory export');
+    throw new Error('market-generator module is missing its memory export');
   }
   if (typeof init !== 'function') {
-    throw new Error('wasm-stub module is missing its init export');
+    throw new Error('market-generator module is missing its init export');
   }
   if (typeof generateBatch !== 'function') {
-    throw new Error('wasm-stub module is missing its generateBatch export');
+    throw new Error(
+      'market-generator module is missing its generateBatch export'
+    );
   }
   if (typeof recordCount !== 'function') {
-    throw new Error('wasm-stub module is missing its recordCount export');
+    throw new Error(
+      'market-generator module is missing its recordCount export'
+    );
   }
-  return { memory, init, generateBatch, recordCount } as WasmStubExports;
+  return { memory, init, generateBatch, recordCount } as MarketGeneratorExports;
 }
 
 /**
- * Fetches the deployed wasm-stub artifact (same-origin) and instantiates it.
+ * Fetches the deployed market-generator artifact (same-origin) and instantiates it.
  * The default URL matches the app assets entry that copies the built module
  * into the wasm/ output directory.
  */
-export async function loadWasmStub(
-  url = 'wasm/wasm-stub.wasm'
-): Promise<WasmStubExports> {
+export async function loadMarketGenerator(
+  url = 'wasm/market-generator.wasm'
+): Promise<MarketGeneratorExports> {
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(`Failed to load ${url}: HTTP ${response.status}`);
   }
-  return instantiateWasmStub(await response.arrayBuffer());
+  return instantiateMarketGenerator(await response.arrayBuffer());
 }

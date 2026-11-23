@@ -5,10 +5,10 @@
 // running app.
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { instantiateWasmStub } from './wasm-loader';
+import { instantiateMarketGenerator } from './wasm-loader';
 
 const ARTIFACT_URL = new URL(
-  '../../../../../dist/libs/wasm-stub/wasm-stub.wasm',
+  '../../../../../dist/libs/market-generator/market-generator.wasm',
   import.meta.url
 );
 
@@ -41,7 +41,7 @@ type MarketGenerator = {
 
 async function instantiateGenerator(): Promise<MarketGenerator> {
   const wasm = (
-    await instantiateWasmStub(readFileSync(ARTIFACT_URL))
+    await instantiateMarketGenerator(readFileSync(ARTIFACT_URL))
   ) as unknown as MarketGenerator;
   // The seam the artifact owes its consumer: the loader hands back the
   // generator surface. Asserted here so every batch assertion below starts
@@ -106,8 +106,8 @@ function expectRecordsValid(
   }
 }
 
-describe('wasm-stub compiled artifact', () => {
-  it('is produced by the wasm-stub build into the shared dist tree', () => {
+describe('market-generator compiled artifact', () => {
+  it('is produced by the market-generator build into the shared dist tree', () => {
     expect(existsSync(ARTIFACT_URL)).toBe(true);
   });
 

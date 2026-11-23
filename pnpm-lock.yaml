@@ -154,7 +154,7 @@ importers:
         specifier: ^3.0.0
         version: 3.2.7(@types/node@18.16.9)(@vitest/ui@3.2.7)(jiti@2.4.2)(jsdom@22.1.0)(less@4.2.2)(sass-embedded@1.108.2)(sass@1.108.2)(stylus@0.64.0)(terser@5.39.0)(yaml@2.9.1)
 
-  libs/wasm-stub:
+  libs/market-generator:
     devDependencies:
       assemblyscript:
         specifier: ^0.28.20
