@@ -1,1 +1,72 @@
 <app-destination-identification [destination]="destination" />
+
+<div class="settings-column">
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline">
+      <mat-label>Instrument count</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="instrumentCount"
+        [min]="limits.instrumentCount.min"
+        [max]="limits.instrumentCount.max"
+        step="1"
+      />
+      <mat-hint>1–50 fictional instruments</mat-hint>
+      @if (form.controls.instrumentCount.invalid) {
+        <mat-error>Enter a whole number between 1 and 50.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Updates per batch</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="updatesPerBatch"
+        [min]="limits.updatesPerBatch.min"
+        [max]="limits.updatesPerBatch.max"
+        step="1"
+      />
+      <mat-hint>1–1000 market updates per generated batch</mat-hint>
+      @if (form.controls.updatesPerBatch.invalid) {
+        <mat-error>Enter a whole number between 1 and 1000.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Batch interval (ms)</mat-label>
+      <input
+        matInput
+        type="number"
+        formControlName="batchIntervalMs"
+        [min]="limits.batchIntervalMs.min"
+        [max]="limits.batchIntervalMs.max"
+        step="1"
+      />
+      <mat-hint>50–2000 ms between batches</mat-hint>
+      @if (form.controls.batchIntervalMs.invalid) {
+        <mat-error>Enter a whole number between 50 and 2000.</mat-error>
+      }
+    </mat-form-field>
+  </form>
+
+  <p class="nominal-rate">
+    @if (nominalRate() !== null) {
+      Nominal rate: {{ nominalRate() }} updates/s
+    } @else {
+      Nominal rate: unavailable
+    }
+  </p>
+
+  <button
+    class="apply-command"
+    mat-flat-button
+    type="button"
+    color="primary"
+    [disabled]="form.invalid"
+    (click)="apply()"
+  >
+    Apply
+  </button>
+</div>

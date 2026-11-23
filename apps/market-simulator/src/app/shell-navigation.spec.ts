@@ -1,19 +1,37 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
+import { afterEach, beforeEach, vi } from 'vitest';
 import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
 
-const DASHBOARD_IDENTIFICATION_ROWS = [
-  'market-simulator scaffold shell',
-  'Open destination: market-dashboard',
-  'Anticipated product page: market dashboard',
-];
+/**
+ * The shell holds the application's producer subscription, so the test
+ * environment carries a stand-in Worker global: the subscription constructs
+ * the single client, whose worker never runs in a test.
+ */
+beforeEach(() => {
+  vi.stubGlobal(
+    'Worker',
+    class {
+      onmessage: unknown = null;
+      onerror: unknown = null;
+      postMessage(_message: unknown): void {
+        return;
+      }
+      terminate(): void {
+        return;
+      }
+    }
+  );
+});
 
-const SETTINGS_IDENTIFICATION_ROWS = [
-  'market-simulator scaffold shell',
-  'Open destination: producer-settings',
-  'Anticipated product page: producer configuration',
-];
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
+const DASHBOARD_IDENTIFICATION_ROWS = ['Market dashboard'];
+
+const SETTINGS_IDENTIFICATION_ROWS = ['Producer settings'];
 
 describe('shell navigation between the two destinations', () => {
   beforeEach(async () => {
@@ -68,7 +86,7 @@ describe('shell navigation between the two destinations', () => {
     await settle(fixture);
   }
 
-  it('names the open destination in a three-row identification block on the default address', async () => {
+  it('names the open destination in an identification block on the default address', async () => {
     const fixture = await openShellAt('/');
 
     expect(identificationRows(fixture)).toEqual(DASHBOARD_IDENTIFICATION_ROWS);

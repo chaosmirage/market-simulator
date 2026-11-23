@@ -1,0 +1,29 @@
+/* The working column: three homogeneous entries as one adjustment group,
+   the derived rate at its close, the apply command after the group. */
+.settings-column {
+  display: flex;
+  flex-direction: column;
+  max-width: 26rem;
+  padding: 1.25rem 0 1.5rem;
+}
+
+/* One spaced group: each entry keeps clear air above and below. */
+.settings-column form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.settings-column mat-form-field {
+  width: 100%;
+}
+
+.nominal-rate {
+  margin: 0.75rem 0 0;
+  color: rgba(0, 0, 0, 0.72);
+}
+
+.apply-command {
+  align-self: flex-start;
+  margin-top: 1.25rem;
+}

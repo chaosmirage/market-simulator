@@ -1,14 +1,12 @@
-/* The block's mass sits centered in the upper third of the content field,
-   stacked rows held together as one reading target. */
+/* The page heading sits close under the band, left-aligned with the
+   content field. */
 .identification-block {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin: 20vh auto 0;
-  max-width: 32rem;
-  text-align: center;
+  margin: 0.75rem 0 0;
 }
 
 .identification-row {
   margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.3;
 }

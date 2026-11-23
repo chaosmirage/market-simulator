@@ -1,20 +1,43 @@
 <nav class="movement-band" aria-label="Movement to the other destination">
-  <a
-    [routerLink]="dashboard.path"
-    routerLinkActive
-    [routerLinkActiveOptions]="exactMatch"
-    #dashboardOffer="routerLinkActive"
-    [hidden]="dashboardOffer.isActive"
-    >{{ dashboard.name }}</a
-  >
-  <a
-    [routerLink]="settings.path"
-    routerLinkActive
-    [routerLinkActiveOptions]="exactMatch"
-    #settingsOffer="routerLinkActive"
-    [hidden]="settingsOffer.isActive"
-    >{{ settings.name }}</a
-  >
+  <div class="band-orientation">
+    <a
+      [routerLink]="dashboard.path"
+      routerLinkActive
+      [routerLinkActiveOptions]="exactMatch"
+      #dashboardOffer="routerLinkActive"
+      [hidden]="dashboardOffer.isActive"
+      >{{ dashboard.name }}</a
+    >
+    <a
+      [routerLink]="settings.path"
+      routerLinkActive
+      [routerLinkActiveOptions]="exactMatch"
+      #settingsOffer="routerLinkActive"
+      [hidden]="settingsOffer.isActive"
+      >{{ settings.name }}</a
+    >
+  </div>
+
+  <div class="condition-chip" [attr.data-status]="store.status()">
+    <mat-icon aria-hidden="true">{{
+      store.status() === 'running'
+        ? 'play_circle'
+        : store.status() === 'paused'
+        ? 'pause_circle'
+        : store.status() === 'error'
+        ? 'error'
+        : 'hourglass_empty'
+    }}</mat-icon>
+    <span class="condition-label">{{
+      store.status() === 'running'
+        ? 'Producer running'
+        : store.status() === 'paused'
+        ? 'Producer paused'
+        : store.status() === 'error'
+        ? 'Producer failed'
+        : 'Producer initializing'
+    }}</span>
+  </div>
 </nav>
 <main class="content-field">
   <router-outlet />

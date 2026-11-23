@@ -15,10 +15,15 @@ wiring; behavior inside `src/app` is documented by nested guides.
   `wasm/` output directory (the artifact the worker fetches). Serve, lint,
   test, and a static file server round out the target set.
 - Two compiled entry points, both listed in `tsconfig.app.json` `files`:
-  `src/main.ts` (browser bootstrap; it also runs the worker startup proof
-  at launch) and `src/app/worker/market-producer.worker.ts` (the worker
-  bundle). A new separately compiled entry must be added there or it
-  silently drops out of the program.
+  `src/main.ts` (browser bootstrap; it also starts the first producer run
+  with the default settings through the shared worker client) and
+  `src/app/worker/market-producer.worker.ts` (the worker bundle). A new
+  separately compiled entry must be added there or it silently drops out of
+  the program.
+- Angular Material wiring: `src/styles.css` imports the prebuilt theme and
+  the self-hosted `material-icons` stylesheet (same-origin fonts only, per
+  the content-security baseline), and `app.config.ts` registers animations
+  through `provideAnimationsAsync()`.
 - `src/index.html` - the served document. It carries the deny-by-default
   content-security baseline in a head meta; the static host sets no
   response headers, so the policy ships in-document or never.

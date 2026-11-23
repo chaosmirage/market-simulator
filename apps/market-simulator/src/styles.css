@@ -1,1 +1,6 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+@import 'material-icons/iconfont/material-icons.css';
+
+/* Both registrations stay ahead of every other rule: CSS admits @import
+   only at the top of a stylesheet. The icon font's files are emitted as
+   same-origin assets, matching the document's same-origin font policy. */

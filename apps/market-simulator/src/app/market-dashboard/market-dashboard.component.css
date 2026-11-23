@@ -1,0 +1,29 @@
+/* The reading's head carries the run command closest to the figures it
+   freezes; the command is its own block, never visually part of the table. */
+.dashboard {
+  padding: 0.75rem 0 1.5rem;
+}
+
+.reading-head {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.25rem 0 0.5rem;
+}
+
+.metric-table {
+  width: 100%;
+}
+
+/* Labeled rows keep inter-row spacing so stacked rows do not fuse. */
+.metric-table tr.mat-mdc-row {
+  height: 2.75rem;
+}
+
+/* Numeric readings align by their units' common edge. */
+.metric-last,
+.metric-spread,
+.metric-volume,
+.metric-vwap,
+.metric-imbalance {
+  text-align: right;
+}

@@ -1,26 +1,32 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { AppComponent } from './app/app.component';
-import { getMarketProducerWorkerClient } from './app/worker/worker-client';
+import {
+  MARKET_PRODUCER_WORKER_CLIENT,
+} from './app/worker/worker-client';
+import { RunStateStore } from './app/run-state/run-state.store';
+import {
+  DEFAULT_SIMULATION_SETTINGS,
+} from './app/worker/worker-contract';
 
-// The worker seam's startup proof, observable on the running app: the empty
-// producer worker is created once, answers the typed ping with the typed
-// echo, then loads the wasm artifact through the same loader the artifact
-// spec pins. Failures surface as errors, never as silent hangs.
-const workerSeam = getMarketProducerWorkerClient();
-workerSeam
-  .ping()
-  .then(() => console.log('[market-producer] echo received'))
-  .then(() => workerSeam.initWasm())
-  .then((probe) =>
-    console.log(
-      `[market-producer] wasm artifact loaded (stub add(2, 3) = ${probe})`
-    )
-  )
-  .catch((error: unknown) =>
-    console.error('[market-producer] worker seam failed', error)
-  );
-
-bootstrapApplication(AppComponent, appConfig).catch((err) =>
-  console.error(err)
-);
+// The application starts with the default producer settings: one long-lived
+// producer run is established as the shell comes up, and any initialization
+// failure surfaces through the displayed condition instead of silence.
+bootstrapApplication(AppComponent, appConfig)
+  .then((application) => {
+    const client = application.injector.get(MARKET_PRODUCER_WORKER_CLIENT);
+    const store = application.injector.get(RunStateStore);
+    return client
+      .start(DEFAULT_SIMULATION_SETTINGS)
+      .catch((error: unknown) => {
+        store.acceptPush({
+          kind: 'error',
+          runId: null,
+          message:
+            error instanceof Error
+              ? error.message
+              : `the market producer could not start: ${String(error)}`,
+        });
+      });
+  })
+  .catch((err) => console.error(err));
