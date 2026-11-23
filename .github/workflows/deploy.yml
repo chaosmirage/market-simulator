@@ -55,11 +55,15 @@ jobs:
             tail -5 /tmp/gates.log
           else
             {
-              echo "### Gates failure log"
+              echo "### Gates log size"
+              wc -c /tmp/gates.log || true
+              echo "### Matching error lines (capped)"
+              grep -nE "✕|FAIL|Error:|ERROR|ERR_|error TS|ELIFECYCLE" /tmp/gates.log | head -60 || true
               echo '```'
-              cat /tmp/gates.log
+              grep -anE "✕|FAIL|Error:|ERR_|error TS|ELIFECYCLE" /tmp/gates.log | head -5 | cut -c1-400 || true
+              tail -c 6000 /tmp/gates.log
               echo '```'
-            } >> "$GITHUB_STEP_SUMMARY"
+            } >> "$GITHUB_STEP_SUMMARY" || true
             exit 1
           fi
 
