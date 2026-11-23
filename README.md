@@ -104,6 +104,17 @@ reset-on-apply behavior, pause/resume with rejection of previous-run
 results, and the generator's batch sizes and value invariants. No test
 depends on long real-time waits.
 
+To run only the compiled Wasm generator artifact tests and rerun them whenever
+the `market-generator` project changes:
+
+```sh
+pnpm run test:market-generator:watch
+```
+
+The command runs the artifact test once at startup, then watches the generator
+project. On each change, Nx rebuilds the Wasm dependency before running only
+`market-generator.artifact.spec.ts` again. Stop watching with Ctrl+C.
+
 Formatting:
 
 ```sh

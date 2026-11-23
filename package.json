@@ -2,6 +2,9 @@
   "name": "market-simulator",
   "version": "0.0.0",
   "private": true,
+  "scripts": {
+    "test:market-generator:watch": "pnpm exec nx test market-simulator --testFile=src/app/wasm/market-generator.artifact.spec.ts; pnpm exec nx watch --projects=market-generator -- pnpm exec nx test market-simulator --testFile=src/app/wasm/market-generator.artifact.spec.ts"
+  },
   "engines": {
     "node": ">=22.0.0 <23"
   },
