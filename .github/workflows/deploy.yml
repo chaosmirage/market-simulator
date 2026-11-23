@@ -50,7 +50,18 @@ jobs:
           pnpm install --frozen-lockfile
 
       - name: Workspace gates (build, lint, test)
-        run: pnpm exec nx run-many -t build,lint,test
+        run: |
+          if pnpm exec nx run-many -t build,lint,test > /tmp/gates.log 2>&1; then
+            tail -5 /tmp/gates.log
+          else
+            {
+              echo "### Gates failure log"
+              echo '```'
+              cat /tmp/gates.log
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
 
       - name: Provision the GitHub Pages site
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
