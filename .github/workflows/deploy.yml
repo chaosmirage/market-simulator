@@ -66,7 +66,14 @@ jobs:
       # and local dev serving from root stays unaffected. The trailing
       # slash is required for deep links to resolve.
       - name: Production build with the Pages base path
-        run: pnpm exec nx build market-simulator --configuration production --base-href "/${GITHUB_REPOSITORY#*/}/"
+        # The trailing 404.html copy is the Pages-side SPA fallback: the static
+        # host has no route rewriting, so a deep link to a client-side route
+        # would otherwise meet the host's 404 instead of the shell. The copied
+        # index carries the production base href, so the bootstrapped router
+        # resolves the requested route from whatever path the host served.
+        run: |
+          pnpm exec nx build market-simulator --configuration production --base-href "/${GITHUB_REPOSITORY#*/}/"
+          cp dist/apps/market-simulator/browser/index.html dist/apps/market-simulator/browser/404.html
 
       - name: Upload the browser bundle as the Pages artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
