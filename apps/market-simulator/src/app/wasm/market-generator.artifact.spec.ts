@@ -168,6 +168,24 @@ describe('market-generator compiled artifact', () => {
     expect(fromFirst).toEqual(fromSecond);
   });
 
+  it('evolves each instrument price from its previous value', async () => {
+    const wasm = await instantiateGenerator();
+    wasm.init(1, 2026);
+
+    const referencePrices = Array.from({ length: 20 }, () => {
+      const [record] = generateAndRead(wasm, 1);
+      expect(record.instrumentId).toBe(0);
+      return (record.bidCents + record.askCents) / 2;
+    });
+
+    expect(new Set(referencePrices).size).toBeGreaterThan(1);
+    for (let i = 1; i < referencePrices.length; i += 1) {
+      expect(
+        Math.abs(referencePrices[i] - referencePrices[i - 1])
+      ).toBeLessThanOrEqual(20);
+    }
+  });
+
   it('evolves generation state across batches instead of repeating the first', async () => {
     const wasm = await instantiateGenerator();
     wasm.init(5, 2026);
