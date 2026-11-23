@@ -5,6 +5,8 @@ renders a live market view whose data is generated locally by a WebAssembly
 library written for this project, running inside a Web Worker so data
 generation never competes with the UI thread.
 
+[![CI](https://github.com/chaosmirage/market-simulator/actions/workflows/deploy.yml/badge.svg)](https://github.com/chaosmirage/market-simulator/actions/workflows/deploy.yml)
+
 The repository is currently a scaffold: it ships the infrastructure the
 product will grow on and no business logic yet. What exists today:
 
@@ -16,6 +18,20 @@ product will grow on and no business logic yet. What exists today:
   the worker
 - a GitHub Actions workflow that installs, gates, and deploys the app on
   every push to main
+
+## Quick start
+
+Clone, install, and run in one block:
+
+```sh
+git clone https://github.com/chaosmirage/market-simulator.git
+cd market-simulator
+corepack enable
+pnpm install
+pnpm exec nx serve market-simulator
+```
+
+Each step is unpacked in the sections below.
 
 ## Prerequisites
 
@@ -76,6 +92,15 @@ frozen lockfile on Node 22, runs the build, lint, and test gates, builds
 the production bundle with the GitHub Pages base path, and publishes the
 result to GitHub Pages. The workflow can also be started manually from
 the Actions tab.
+
+## Tech stack
+
+- Angular with TypeScript - application shell, routing, components
+- Nx workspace - build, lint, and test orchestration across projects
+- pnpm - workspace package management from a committed lockfile
+- AssemblyScript - compiled to WebAssembly, loaded inside a Web Worker
+- Vitest, ESLint, Prettier - unit tests, linting, and formatting
+- GitHub Actions - CI gates and the GitHub Pages deployment
 
 ## Project structure
 
