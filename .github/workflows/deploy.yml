@@ -1,0 +1,73 @@
+# Delivery pipeline for the GitHub Pages deployment.
+# Pushing to main (or a manual dispatch) restores the pinned toolchain,
+# runs the workspace gates, builds the production bundle with the Pages
+# base path, and publishes it — no manual step in between.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Least privilege, declared once for the whole run so no step can inherit a
+# wider token: checkout needs contents:read, the Pages artifact write needs
+# pages:write, and deploy-pages spends the OIDC token (id-token:write).
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Keep a single deployment in flight: a push made during a running deploy
+# queues behind it instead of racing the Pages API into a conflict.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # The Node version lives in .nvmrc — the same file local tooling
+      # reads — so CI and local dev run the same runtime without a
+      # duplicated literal. It must be set up before pnpm installs so the
+      # dependencies are laid down on the pinned runtime, not the
+      # runner's default.
+      - name: Set up Node from .nvmrc
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+
+      # pnpm's exact version and integrity hash are pinned by the
+      # packageManager field in package.json; corepack reads that pin, so no
+      # version is duplicated here. The frozen lockfile makes the restored
+      # dependency graph bit-identical to the committed one.
+      - name: Restore the pinned pnpm toolchain and dependencies
+        run: |
+          corepack enable
+          pnpm install --frozen-lockfile
+
+      - name: Workspace gates (build, lint, test)
+        run: pnpm exec nx run-many -t build,lint,test
+
+      - name: Provision the GitHub Pages site
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      # Pages serves a project site under /<repository-name>/, so the bundle
+      # must resolve its assets and routes against that prefix. The base
+      # href is derived from the repository the run lives in — the sub-path
+      # is a property of where the repository is published, not of the code,
+      # and local dev serving from root stays unaffected. The trailing
+      # slash is required for deep links to resolve.
+      - name: Production build with the Pages base path
+        run: pnpm exec nx build market-simulator --configuration production --base-href "/${GITHUB_REPOSITORY#*/}/"
+
+      - name: Upload the browser bundle as the Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: dist/apps/market-simulator/browser
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

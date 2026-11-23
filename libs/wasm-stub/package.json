@@ -1,0 +1,8 @@
+{
+  "name": "wasm-stub",
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {
+    "assemblyscript": "^0.28.20"
+  }
+}

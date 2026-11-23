@@ -1,0 +1,94 @@
+{
+  "name": "market-simulator",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/market-simulator/src",
+  "tags": [],
+  "implicitDependencies": ["wasm-stub"],
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:application",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/market-simulator",
+        "index": "apps/market-simulator/src/index.html",
+        "browser": "apps/market-simulator/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/market-simulator/tsconfig.app.json",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/market-simulator/public"
+          },
+          {
+            "glob": "**/*.wasm",
+            "input": "dist/libs/wasm-stub",
+            "output": "wasm"
+          }
+        ],
+        "styles": ["apps/market-simulator/src/styles.css"],
+        "scripts": []
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "buildTarget": "market-simulator:build:production"
+        },
+        "development": {
+          "buildTarget": "market-simulator:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "buildTarget": "market-simulator:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
+      "options": {
+        "reportsDirectory": "../../coverage/apps/market-simulator"
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "market-simulator:build",
+        "staticFilePath": "dist/apps/market-simulator/browser",
+        "spa": true
+      }
+    }
+  }
+}

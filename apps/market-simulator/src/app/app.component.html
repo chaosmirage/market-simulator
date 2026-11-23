@@ -1,0 +1,21 @@
+<nav class="movement-band" aria-label="Movement to the other destination">
+  <a
+    [routerLink]="dashboard.path"
+    routerLinkActive
+    [routerLinkActiveOptions]="exactMatch"
+    #dashboardOffer="routerLinkActive"
+    [hidden]="dashboardOffer.isActive"
+    >{{ dashboard.name }}</a
+  >
+  <a
+    [routerLink]="settings.path"
+    routerLinkActive
+    [routerLinkActiveOptions]="exactMatch"
+    #settingsOffer="routerLinkActive"
+    [hidden]="settingsOffer.isActive"
+    >{{ settings.name }}</a
+  >
+</nav>
+<main class="content-field">
+  <router-outlet />
+</main>

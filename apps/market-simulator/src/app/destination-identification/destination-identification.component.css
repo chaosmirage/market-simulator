@@ -1,0 +1,14 @@
+/* The block's mass sits centered in the upper third of the content field,
+   stacked rows held together as one reading target. */
+.identification-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 20vh auto 0;
+  max-width: 32rem;
+  text-align: center;
+}
+
+.identification-row {
+  margin: 0;
+}

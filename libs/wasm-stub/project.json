@@ -1,0 +1,21 @@
+{
+  "name": "wasm-stub",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/wasm-stub/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "cache": true,
+      "options": {
+        "cwd": "libs/wasm-stub",
+        "command": "pnpm exec asc src/index.ts --outFile ../../dist/libs/wasm-stub/wasm-stub.wasm --runtime stub"
+      },
+      "outputs": ["{workspaceRoot}/dist/libs/wasm-stub"]
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

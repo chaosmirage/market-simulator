@@ -1,0 +1,8 @@
+packages:
+  - apps/*
+  - libs/*
+
+# Install-time scripts run only for the explicitly approved packages below;
+# nx's postinstall pre-builds the project graph so the first command is fast.
+onlyBuiltDependencies:
+  - nx

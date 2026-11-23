@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+tmp/
+.angular/
+coverage/
+
+# Nx cache and daemon
+.nx/
+
+# Foreign lockfiles: pnpm-lock.yaml is the committed install record
+package-lock.json
+npm-shrinkwrap.json
+yarn.lock
+
+# OS
+.DS_Store
+
+# Local development-process state
+.logos/
+.claude/settings.local.json
+
+# The Node pin is part of the repository contract (CI reads it via
+# node-version-file), so restore it even where a user-level excludes
+# file hides nvm pins.
+!.nvmrc
+
+.angular
+
+vite.config.*.timestamp*
+vitest.config.*.timestamp*
