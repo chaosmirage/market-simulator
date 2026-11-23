@@ -1,4 +1,3 @@
-import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import {
   Component,
   DestroyRef,
@@ -38,8 +37,6 @@ const METRIC_COLUMNS = [
     MatTableModule,
     MatButtonModule,
     MatIconModule,
-    CurrencyPipe,
-    DecimalPipe,
   ],
   selector: 'app-market-dashboard',
   templateUrl: './market-dashboard.component.html',

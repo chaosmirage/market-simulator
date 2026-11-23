@@ -12,8 +12,10 @@ wiring; behavior inside `src/app` is documented by nested guides.
 - `project.json` - the unit's targets. The build uses the Angular
   application builder with `src/main.ts` as the browser entry, copies
   `public/` verbatim, and copies `dist/libs/wasm-stub/*.wasm` into the
-  `wasm/` output directory (the artifact the worker fetches). Serve, lint,
-  test, and a static file server round out the target set.
+  `wasm/` output directory (the artifact the worker fetches). Both build
+  and serve build project dependencies first, so the worker never starts
+  against a stale or missing Wasm artifact. Lint, test, and a static file
+  server round out the target set.
 - Two compiled entry points, both listed in `tsconfig.app.json` `files`:
   `src/main.ts` (browser bootstrap; it also starts the first producer run
   with the default settings through the shared worker client) and
