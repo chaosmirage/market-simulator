@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { Router } from '@angular/router';
 import { MARKET_PRODUCER_WORKER_CLIENT } from '../worker/worker-client';
 import { ProducerSettingsComponent } from './producer-settings.component';
 
@@ -21,11 +22,15 @@ interface AppliedSettings {
  */
 function createRecordingClient() {
   const appliedSettings: AppliedSettings[] = [];
+  let applyResult = Promise.resolve();
   return {
     appliedSettings,
+    setApplyResult(result: Promise<void>) {
+      applyResult = result;
+    },
     apply(settings: AppliedSettings): Promise<void> {
       appliedSettings.push(settings);
-      return Promise.resolve();
+      return applyResult;
     },
   };
 }
@@ -33,14 +38,25 @@ function createRecordingClient() {
 describe('the producer-settings destination form', () => {
   let fixture: ComponentFixture<ProducerSettingsComponent>;
   let client: ReturnType<typeof createRecordingClient>;
+  let navigatedUrls: string[];
 
   beforeEach(async () => {
     client = createRecordingClient();
+    navigatedUrls = [];
     await TestBed.configureTestingModule({
       imports: [ProducerSettingsComponent],
       providers: [
         provideNoopAnimations(),
         { provide: MARKET_PRODUCER_WORKER_CLIENT, useValue: client },
+        {
+          provide: Router,
+          useValue: {
+            navigateByUrl(url: string) {
+              navigatedUrls.push(url);
+              return Promise.resolve(true);
+            },
+          },
+        },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(ProducerSettingsComponent);
@@ -118,18 +134,29 @@ describe('the producer-settings destination form', () => {
     }
   });
 
-  it('issues exactly one apply command carrying the parsed integers once every entry stands accepted', async () => {
+  it('returns to the dashboard after the applied settings succeed', async () => {
+    let finishApply!: () => void;
+    client.setApplyResult(
+      new Promise<void>((resolve) => {
+        finishApply = resolve;
+      })
+    );
     await typeInto(entry(0), '12');
     await typeInto(entry(1), '250');
     await typeInto(entry(2), '100');
 
     expect(applyButton().disabled).toBe(false);
     applyButton().click();
-    await fixture.whenStable();
 
     expect(client.appliedSettings).toEqual([
       { instrumentCount: 12, updatesPerBatch: 250, batchIntervalMs: 100 },
     ]);
+    expect(navigatedUrls).toEqual([]);
+
+    finishApply();
+    await fixture.whenStable();
+
+    expect(navigatedUrls).toEqual(['/']);
   });
 
   it('issues no producer command while values are only edited', async () => {

@@ -29,7 +29,8 @@ Live demo: <https://chaosmirage.github.io/market-simulator/>
   rejects non-integer or out-of-range entries next to the field that produced
   them. Editing a value never touches the running producer; the **Apply**
   action starts a new run with the new settings and clears the previous
-  run's values and totals.
+  run's values and totals, then returns to the dashboard when the new run
+  starts successfully.
 - **Run lifecycle** — a pause control stops generation while every value and
   total stands preserved (a final snapshot accounts for all events processed
   before the pause), and resuming continues from those totals with no

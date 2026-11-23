@@ -1,11 +1,12 @@
 import { Component, computed, inject, DestroyRef } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { DestinationIdentificationComponent } from '../destination-identification/destination-identification.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { PRODUCER_SETTINGS } from '../destinations';
+import { MARKET_DASHBOARD, PRODUCER_SETTINGS } from '../destinations';
 import { MARKET_PRODUCER_WORKER_CLIENT } from '../worker/worker-client';
 import { SIMULATION_SETTINGS_LIMITS } from '../worker/worker-contract';
 
@@ -35,6 +36,7 @@ export class ProducerSettingsComponent {
   protected readonly limits = SIMULATION_SETTINGS_LIMITS;
 
   private readonly client = inject(MARKET_PRODUCER_WORKER_CLIENT);
+  private readonly router = inject(Router);
 
   /**
    * The three producer settings as text entries, pre-filled with the
@@ -82,11 +84,15 @@ export class ProducerSettingsComponent {
       return;
     }
     const values = this.form.getRawValue();
-    void this.client.apply({
-      instrumentCount: Number(values.instrumentCount),
-      updatesPerBatch: Number(values.updatesPerBatch),
-      batchIntervalMs: Number(values.batchIntervalMs),
-    });
+    void this.client
+      .apply({
+        instrumentCount: Number(values.instrumentCount),
+        updatesPerBatch: Number(values.updatesPerBatch),
+        batchIntervalMs: Number(values.batchIntervalMs),
+      })
+      .then(() =>
+        this.router.navigateByUrl(`/${MARKET_DASHBOARD.path}`)
+      );
   }
 
   private entryControl(
