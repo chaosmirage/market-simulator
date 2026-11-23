@@ -50,28 +50,14 @@ jobs:
           pnpm install --frozen-lockfile
 
       - name: Workspace gates (build, lint, test)
-        run: |
-          FAILED=""
-          for T in build lint test; do
-            LOG="/tmp/$T.log"
-            if pnpm exec nx run-many -t "$T" > "$LOG" 2>&1; then
-              echo "### $T: OK ($(wc -c < "$LOG") bytes)" >> "$GITHUB_STEP_SUMMARY"
-            else
-              FAILED="$T"
-              {
-                echo "### $T: FAILED ($(wc -c < "$LOG") bytes in log)"
-                echo '```'
-                grep -anE "✕|FAIL|Error:|ERROR|ERR_|error TS|ELIFECYCLE|Exception" "$LOG" | head -30 | cut -c1-300 || true
-                echo "--- tail ---"
-                tail -c 2500 "$LOG"
-                echo '```'
-              } >> "$GITHUB_STEP_SUMMARY" || true
-            fi
-          done
-          [ -z "$FAILED" ] || { echo "failing target: $FAILED"; exit 1; }
+        run: pnpm exec nx run-many -t build,lint,test
 
       - name: Provision the GitHub Pages site
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+        with:
+          # First deploy self-provisions the site (build-from-workflow mode),
+          # so no manual Pages enablement step exists anywhere.
+          enablement: true
 
       # Pages serves a project site under /<repository-name>/, so the bundle
       # must resolve its assets and routes against that prefix. The base
