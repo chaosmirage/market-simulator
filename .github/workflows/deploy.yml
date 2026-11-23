@@ -51,21 +51,24 @@ jobs:
 
       - name: Workspace gates (build, lint, test)
         run: |
-          if pnpm exec nx run-many -t build,lint,test > /tmp/gates.log 2>&1; then
-            tail -5 /tmp/gates.log
-          else
-            {
-              echo "### Gates log size"
-              wc -c /tmp/gates.log || true
-              echo "### Matching error lines (capped)"
-              grep -nE "✕|FAIL|Error:|ERROR|ERR_|error TS|ELIFECYCLE" /tmp/gates.log | head -60 || true
-              echo '```'
-              grep -anE "✕|FAIL|Error:|ERR_|error TS|ELIFECYCLE" /tmp/gates.log | head -5 | cut -c1-400 || true
-              tail -c 6000 /tmp/gates.log
-              echo '```'
-            } >> "$GITHUB_STEP_SUMMARY" || true
-            exit 1
-          fi
+          FAILED=""
+          for T in build lint test; do
+            LOG="/tmp/$T.log"
+            if pnpm exec nx run-many -t "$T" > "$LOG" 2>&1; then
+              echo "### $T: OK ($(wc -c < "$LOG") bytes)" >> "$GITHUB_STEP_SUMMARY"
+            else
+              FAILED="$T"
+              {
+                echo "### $T: FAILED ($(wc -c < "$LOG") bytes in log)"
+                echo '```'
+                grep -anE "✕|FAIL|Error:|ERROR|ERR_|error TS|ELIFECYCLE|Exception" "$LOG" | head -30 | cut -c1-300 || true
+                echo "--- tail ---"
+                tail -c 2500 "$LOG"
+                echo '```'
+              } >> "$GITHUB_STEP_SUMMARY" || true
+            fi
+          done
+          [ -z "$FAILED" ] || { echo "failing target: $FAILED"; exit 1; }
 
       - name: Provision the GitHub Pages site
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
