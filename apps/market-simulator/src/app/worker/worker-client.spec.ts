@@ -17,7 +17,7 @@ class StandInWorker {
   onerror: ((event: { readonly message: string }) => void) | null = null;
   terminated = false;
 
-  constructor(_url: URL, _options: { readonly type: 'module' }) {
+  constructor() {
     StandInWorker.instances.push(this);
   }
 

@@ -71,7 +71,7 @@ function createPushingClient() {
         }
       };
     },
-    onError(listener: unknown): () => void {
+    onError(): () => void {
       // The dashboard reads the failure condition through the shared
       // condition signal, so the error channel stays unused here.
       return () => undefined;

@@ -15,7 +15,7 @@ beforeEach(() => {
     class {
       onmessage: unknown = null;
       onerror: unknown = null;
-      postMessage(_message: unknown): void {
+      postMessage(): void {
         return;
       }
       terminate(): void {
