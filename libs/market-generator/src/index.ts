@@ -5,6 +5,11 @@ let randomGeneratorState: u32 = 0;
 const MIN_INSTRUMENT_COUNT = 1;
 const MAX_INSTRUMENT_COUNT = 50;
 
+let priceStatePointer: usize = 0;
+const BYTES_PER_PRICE: usize = 4;
+const PRICE_STATE_BYTES: usize = BYTES_PER_PRICE * MAX_INSTRUMENT_COUNT;
+const INITIAL_PRICE_CENTS: u32 = 10000;
+
 const PRNG_MULTIPLIER: u32 = 1664525;
 const PRNG_INCREMENT: u32 = 1013904223;
 
@@ -30,9 +35,20 @@ export function init(instrumentCount: i32, seed: u32): void {
     return;
   }
 
+  if (priceStatePointer === 0) {
+    priceStatePointer = heap.alloc(PRICE_STATE_BYTES);
+  }
+
   instrumentCountState = instrumentCount;
   recordCountState = 0;
   randomGeneratorState = seed;
+
+  for (let i = 0; i < instrumentCount; i++) {
+    store<u32>(
+      priceStatePointer + <usize>i * BYTES_PER_PRICE,
+      INITIAL_PRICE_CENTS
+    );
+  }
 }
 
 export function generateBatch(updatesPerBatch: i32): i32 {
