@@ -11,9 +11,9 @@ contract the worker reads directly from linear memory.
 ## Key pieces
 
 - `src/index.ts` - the entry module the compiler consumes. It implements a
-  seeded integer PRNG (splitmix64: a u64 state stepped deterministically,
-  drawing u32 values) so generation is reproducible from the seed passed to
-  `init`. The export surface is three functions plus the default `memory`:
+  seeded 32-bit linear congruential PRNG so generation is reproducible from
+  the seed passed to `init`. The export surface is three functions plus the
+  default `memory`:
   `init(instrumentCount, seed)` allocates the reused record buffer once and
   resets per-instrument state, `generateBatch(updatesPerBatch)` writes the
   batch and returns the byte offset of the first record — a negative
@@ -22,8 +22,8 @@ contract the worker reads directly from linear memory.
   instrument id, trade price in cents, trade quantity, bid and ask in
   cents, and the available bid and ask quantities; capacity is fixed at
   1000 records and the buffer is reused for every call, so the reader must
-  finish before the next call overwrites it. Prices stay positive and
-  evolve from each instrument's reference price, the bid stays below the
+  finish before the next call overwrites it. Prices stay positive and evolve
+  from each instrument's reference price, the bid stays below the
   ask, trade quantities stay positive, book quantities stay nonnegative,
   and each trade price is chosen from that update's bid or ask.
 - `project.json` - one cached build target (plus lint) that runs, from this
